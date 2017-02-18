@@ -1,0 +1,12 @@
+# conda env install --file=ENVIRONMENT
+# conda env update  --file=ENVIRONMENT
+
+name: classify1
+dependencies:
+  - nltk
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - pip:
+    - regex
