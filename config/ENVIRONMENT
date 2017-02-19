@@ -4,9 +4,10 @@
 name: classify1
 dependencies:
   - nltk
+  - gensim
   - numpy
+  - scikit-learn
   - pandas
   - matplotlib
-  - scikit-learn
   - pip:
     - regex

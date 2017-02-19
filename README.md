@@ -19,7 +19,19 @@ D = |nX-nY| / sqrt(2) / (nX+nY+1)
 
 Drawbacks: does not generalize well on the very short texts.
 
-##### Solution 2
+
+##### Solution 2 - KMeans
+
+Romanian documents often contain terms from english vocabulary,
+those should be iliminated.
+With self-crafted stopwords dictionary KMeans classifier has 
+smaller rate of inertia. 
+
+
+Drawbacks: 
+
+
+##### Performance
 
 
 ##### Environment setup
@@ -39,11 +51,12 @@ $ cp ./data/stopwords/romanian $HOME/nltk_data/corpora/stopwords/
 Anaconda (Python 3.5.2) environment with
 
 ```
+nltk           3.2.2     py36_0
+gensim         0.13.4.1  np112py36_0
 numpy          1.12.0    py36_0
 pandas         0.19.2    np112py36_1
 scikit-learn   0.18.1    np112py36_1
 matplotlib     2.0.0     np112py36_0
-nltk           3.2.2     py36_0
 ```
 
 

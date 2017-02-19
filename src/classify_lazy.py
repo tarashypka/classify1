@@ -3,10 +3,24 @@ from math import sqrt
 
 import matplotlib.pyplot as plt
 import numpy as np
+from nltk.corpus import stopwords
 
-from utils import read_terms
-from stopwords import stop_rom
-from stopwords import stop_eng
+from utils import paths
+
+
+stop_rom = set(stopwords.words('romanian'))
+stop_eng = set(stopwords.words('english'))
+
+# Common stopwords
+stop_rom_eng = stop_rom.intersection(stop_eng)
+stop_eng_in_rom = set(['in', 'o', 'a'])
+stop_rom_in_eng = set([])
+
+# Prepare stopwords
+stop_rom -= stop_rom_eng
+stop_eng -= stop_rom_eng
+stop_eng -= stop_eng_in_rom
+stop_rom -= stop_rom_in_eng
 
 
 def d(x1, x2):
@@ -34,21 +48,32 @@ def d(x1, x2):
 DIST_THRESHOLD = 0.35
 
 
+def read_dataset():
+    X = []
+    with open(paths.TEXTS_RAW_JSON, 'r') as f:
+        for line in f:
+            skip = False
+            try:
+                doc = json.loads(line)
+            except JSONDecodeError:
+                skip = True
+            else:
+                try:
+                    text = doc['title'] + ' ' + doc['text']
+                except KeyError:
+                    skip = True
+            finally:
+                if not skip:
+                    terms = text.lower().split()
+                    x1 = len([term for term in terms if term in stop_rom])
+                    x2 = len([term for term in terms if term in stop_eng])
+                    dist = d(x1, x2)
+                    X.append([x1, x2, dist])
+    return np.asarray(X)
+
+
 if __name__ == '__main__':
-    docs = read_terms()
-
-    # Prepare dataset
-    X = np.empty((0, 3), int)
-    for i, doc in enumerate(docs, start=1):
-        terms = doc['terms']
-        stop_rom_ = [term for term in terms if term in stop_rom]
-        stop_eng_ = [term for term in terms if term in stop_eng]
-        x1, x2 = len(stop_rom_), len(stop_eng_)
-        dist = d(x1, x2)
-        X = np.append(X, np.asarray([[x1, x2, dist]]), axis=0)
-        # numpy solution of appending to the array is much faster than
-        # pandas solution of appending to the dataframe
-
+    X = read_dataset()
     hard = X[:, 2] < DIST_THRESHOLD
     X_hard = X[hard][:, [0, 1]]
     empty = (X_hard[:, 1] == 0) * (X_hard[:, 1] == 0)
