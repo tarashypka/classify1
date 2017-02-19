@@ -17,18 +17,18 @@ D = |nX-nY| / sqrt(2) / (nX+nY+1)
 ```
 
 
-Drawbacks: does not generalize well on the very short texts.
+*Drawbacks*: does not generalize well on the very short texts.
 
 
 ##### Solution 2 - KMeans
 
 Romanian documents often contain terms from english vocabulary,
-those should be iliminated.
+those should be eliminated.
 With self-crafted stopwords dictionary KMeans classifier has 
 smaller rate of inertia. 
 
 
-Drawbacks: 
+*Drawbacks*: 
 
 
 ##### Performance
