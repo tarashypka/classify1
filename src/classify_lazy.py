@@ -63,19 +63,17 @@ def read_dataset(read_f):
             try:
                 doc = json.loads(line)
             except JSONDecodeError:
-                skip = True
+                continue
             else:
                 try:
                     text = doc['text']
                 except KeyError:
-                    skip = True
-            finally:
-                if not skip:
-                    terms = text.lower().split()
-                    x1 = len([term for term in terms if term in stop_rom])
-                    x2 = len([term for term in terms if term in stop_eng])
-                    dist = d(x1, x2)
-                    X.append([x1, x2, dist])
+                    continue
+            terms = text.lower().split()
+            x1 = len([term for term in terms if term in stop_rom])
+            x2 = len([term for term in terms if term in stop_eng])
+            dist = d(x1, x2)
+            X.append([x1, x2, dist])
     return np.asarray(X)
 
 
@@ -97,8 +95,6 @@ def compute_accuracy():
 
 
 if __name__ == '__main__':
-    print(stop_rom)
-    print(stop_eng)
     X = read_dataset(paths.train.TEXTS_JSON)
     hard = X[:, 2] < DIST_THRESHOLD
     X_hard = X[hard][:, [0, 1]]

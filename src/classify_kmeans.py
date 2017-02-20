@@ -69,6 +69,7 @@ def compute_accuracy(classifier, dict_):
     rom_label = int(input('Enter label for romanian language: '))
     if rom_label != ROM_LABEL:
         y_target = 1 - y_target  # swap labels
+    eng_ix = np.where(y_target == 0)[0]
 
     misclassified = np.where(y_predicted != y_target)[0]
     # Show random 10 misclassified samples
@@ -81,7 +82,6 @@ def compute_accuracy(classifier, dict_):
 
 if __name__ == '__main__':
     dict_ = corpora.Dictionary.load(paths.TERMS_DICT)
-    print(list(dict_.values()))
     corpus = list(corpora.MmCorpus(paths.train.TERMS_CORP))
     X = get_data(corpus, n_features=len(dict_))
     X_train, X_cv =  train_test_split(X, test_size=CV_SIZE, random_state=0)
