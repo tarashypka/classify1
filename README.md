@@ -1,7 +1,7 @@
 ### Classify romanian language with Python
 
 
-##### Solution 1 - The *lazy* one
+#### Solution 1 - The *lazy* one
 
 Use stopwords count as features. Since stopwords are usually very frequent 
 within the text, a wealth dictionaries of stopwords could be prepared to easily
@@ -20,7 +20,7 @@ D = |nX-nY| / sqrt(2) / (nX+nY+1)
 *Drawbacks*: does not generalize well on short examples.
 
 
-##### Solution 2 - *KMeans*
+#### Solution 2 - *KMeans*
 
 Features normalization played an important role in finding
 the appropriate clusters.
@@ -29,13 +29,13 @@ the appropriate clusters.
 *Drawbacks*: does not generalize well on short examples.
 
 
-##### Performance
+#### Performance
 
-Accuracy for 2000 of test documents with lazy solution: 0.988
+Accuracy for 2000 of test documents with lazy solution: 0.988  
 Accuracy for 2000 of test documents with KMeans solution: 0.993
 
 
-##### Environment setup
+#### Environment setup
 
 ```
 $ export PROJNAME=classify1 PROJPATH=$(pwd)
@@ -47,7 +47,7 @@ $ unzip ./data/raw_text_ro.zip -d ./data
 $ cp ./data/stopwords/romanian $HOME/nltk_data/corpora/stopwords/
 ```
 
-##### Dependencies
+#### Dependencies
 
 Anaconda (Python 3.5.2) environment with
 
@@ -60,6 +60,6 @@ matplotlib     2.0.0     np112py36_0
 ```
 
 
-##### Notes
+#### Notes
 
 Stopwords for romanian language are [here](http://www.ranks.nl/stopwords/romanian).
