@@ -31,8 +31,8 @@ the appropriate clusters.
 
 #### Performance
 
-Accuracy for 2000 of test documents with lazy solution: 0.988  
-Accuracy for 2000 of test documents with KMeans solution: 0.993
+Accuracy for 4000 of test documents with lazy solution: 0.991  
+Accuracy for 4000 of test documents with KMeans solution: 0.994
 
 
 #### Environment setup

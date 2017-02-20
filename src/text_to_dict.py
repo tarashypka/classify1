@@ -31,4 +31,4 @@ if __name__ == '__main__':
     # Build terms dictionary from train set only
     dict_ = write_dict(paths.train.TEXTS_TXT, paths.TERMS_DICT)
     write_corp(dict_, paths.train.TEXTS_TXT, paths.train.TERMS_CORP)
-    write_corp(dict_, paths.test.TEXTS_LABELED_JSON, paths.test.TERMS_CORP)
+    write_corp(dict_, paths.test.TEXTS_LABELED_TXT, paths.test.TERMS_CORP)

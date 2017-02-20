@@ -4,7 +4,8 @@ import sys
 from utils import paths
 
 
-def read_label():
+def read_label_for(text):
+    print(text)
     label = input('Enter class label (0 rom, 1 eng, 2 skip, 3 save): ')
     try:
         label = int(label)
@@ -24,11 +25,11 @@ if __name__ == '__main__':
     read_f = paths.test.TEXTS_JSON
     write_f = paths.test.TEXTS_LABELED_JSON
     with open(read_f) as fr, open(write_f, 'a') as fw:
-        for line in fr:
+        for i, line in enumerate(fr, start=1):
+            print('document', i)
             try:
                 doc = json.loads(line)
-                print(doc['text'])
-                label = read_label()
+                label = read_label_for(text=doc['text'])
                 if label == 0 or label == 1:
                     doc['class'] = label
                     text = json.dumps(doc, ensure_ascii=False, sort_keys=True)
