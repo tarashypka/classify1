@@ -17,21 +17,22 @@ D = |nX-nY| / sqrt(2) / (nX+nY+1)
 ```
 
 
-*Drawbacks*: does not generalize well on the very short texts.
+*Drawbacks*: does not generalize well on short examples.
 
 
-##### Solution 2 - KMeans
+##### Solution 2 - *KMeans*
 
-Romanian documents often contain terms from english vocabulary,
-those should be eliminated.
-With self-crafted stopwords dictionary KMeans classifier has 
-smaller rate of inertia. 
+Features normalization played an important role in finding
+the appropriate clusters.
 
 
-*Drawbacks*: 
+*Drawbacks*: does not generalize well on short examples.
 
 
 ##### Performance
+
+Accuracy for 2000 of test documents with lazy solution: 0.988
+Accuracy for 2000 of test documents with KMeans solution: 0.993
 
 
 ##### Environment setup
@@ -54,7 +55,6 @@ Anaconda (Python 3.5.2) environment with
 nltk           3.2.2     py36_0
 gensim         0.13.4.1  np112py36_0
 numpy          1.12.0    py36_0
-pandas         0.19.2    np112py36_1
 scikit-learn   0.18.1    np112py36_1
 matplotlib     2.0.0     np112py36_0
 ```
@@ -62,4 +62,4 @@ matplotlib     2.0.0     np112py36_0
 
 ##### Notes
 
-Stopwords for romanian language were fetched from [here](http://www.ranks.nl/stopwords/romanian).
+Stopwords for romanian language are [here](http://www.ranks.nl/stopwords/romanian).

@@ -1,38 +1,100 @@
+import random
 from math import floor
 
 import numpy as np
 from gensim import corpora
+from sklearn import metrics
 from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances
+from sklearn.model_selection import train_test_split
 
 from utils import paths
+from utils import read_labels
 
 
-if __name__ == '__main__':
-    dict_ = corpora.Dictionary.load(paths.TERMS_DICT)
-    terms = np.asarray(list(dict_.values()))
-    corpus = list(corpora.MmCorpus(paths.TERMS_CORP))
-    n_samples = floor(0.7 * len(corpus))
-    n_features = len(dict_)
-    print(n_samples, 'samples,', n_features, 'features')
+method = 'km'
+CLASSIFIERS = {
+    'km': KMeans(n_clusters=2,
+                 init='k-means++',
+                 n_init=10,
+                 max_iter=300,
+                 tol=1e-04,
+                 random_state=0,
+                 n_jobs=4),
+}
+DATASET_SIZE = 1.0
+CV_SIZE = 0.3
+ROM_LABEL = 0
+ENG_LABEL = 1
+
+
+def normalize(X):
+    """
+    Modify each input example with new counts, so that
+    term_1_count + term2_count + ... + termN_count = 1.
+    This will allow not to take into account the initial document length.
+    """
+    return X / (1 + np.sum(X, axis=1)[:, None])
+
+
+def get_data(corpus, n_features):
+    print(len(corpus), 'samples,', n_features, 'features')
     X = []
-    for i, doc in enumerate(corpus[:n_samples]):
+    for doc in corpus:
         x = [0] * n_features
         for term_id, term_freq in doc:
             x[term_id] = term_freq
         X.append(x)
     X = np.asarray(X)
+    X = X[:floor(DATASET_SIZE * len(X))]
+    X = normalize(X)
+    return X
 
-    km = KMeans(n_clusters=2,
-                init='k-means++',
-                n_init=10,
-                max_iter=300,
-                tol=1e-04,
-                random_state=0,
-                n_jobs=4)
 
-    print('Training...')
-    y = km.fit_predict(X)
-    for xi, yi in zip(X[:1000], y[:1000]):
+def compute_accuracy(classifier, dict_):
+    # Load test dataset
+    corpus = list(corpora.MmCorpus(paths.test.TERMS_CORP))
+    X_test = get_data(corpus, n_features=len(dict_))
+    y_predicted = classifier.predict(X_test)
+    y_target = read_labels()
+    texts = [line for line in open(paths.test.TEXTS_LABELED_TXT)]
+
+    # Show classified examples with predicted labels
+    terms = np.asarray(list(dict_.values()))
+    for xi, yi in zip(X_test[:25], y_predicted[:25]):
         xterms = xi.nonzero()
         print('Prediction:', yi, 'for terms', terms[xterms])
-    print('Inertia', km.inertia_)
+
+    # Select correct label for romanian language
+    rom_label = int(input('Enter label for romanian language: '))
+    if rom_label != ROM_LABEL:
+        y_target = 1 - y_target  # swap labels
+
+    misclassified = np.where(y_predicted != y_target)[0]
+    # Show random 10 misclassified samples
+    for wrong in random.sample(list(misclassified), 10):
+        print('Misclassified sample:', texts[wrong])
+
+    accuracy = 1 - len(misclassified) / len(y_target)
+    return accuracy
+
+
+if __name__ == '__main__':
+    dict_ = corpora.Dictionary.load(paths.TERMS_DICT)
+    print(list(dict_.values()))
+    corpus = list(corpora.MmCorpus(paths.train.TERMS_CORP))
+    X = get_data(corpus, n_features=len(dict_))
+    X_train, X_cv =  train_test_split(X, test_size=CV_SIZE, random_state=0)
+
+    print('Training...')
+    classifier = CLASSIFIERS[method]
+    classifier = classifier.fit(X_train)
+    y_train = classifier.predict(X_train)
+    y_cv = classifier.predict(X_cv)
+
+    # Performance on CV set to tune model parameters
+    #print(metrics.silhouette_score(X_cv, y_cv, metric='euclidean'))
+    #print(metrics.calinski_harabaz_score(X_cv, y_cv))
+
+    # Performance on test set to estimate model
+    print('Accuracy', compute_accuracy(classifier, dict_))

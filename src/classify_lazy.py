@@ -1,4 +1,5 @@
 import json
+import random
 from math import sqrt
 
 import matplotlib.pyplot as plt
@@ -6,9 +7,12 @@ import numpy as np
 from nltk.corpus import stopwords
 
 from utils import paths
+from utils import read_labels
+from text_preprocess import replace_special
 
 
 stop_rom = set(stopwords.words('romanian'))
+stop_rom = set(replace_special(' '.join(stop_rom)).split())
 stop_eng = set(stopwords.words('english'))
 
 # Common stopwords
@@ -21,6 +25,9 @@ stop_rom -= stop_rom_eng
 stop_eng -= stop_rom_eng
 stop_eng -= stop_eng_in_rom
 stop_rom -= stop_rom_in_eng
+
+ROM_LABEL = 0
+ENG_LABEL = 1
 
 
 def d(x1, x2):
@@ -48,9 +55,9 @@ def d(x1, x2):
 DIST_THRESHOLD = 0.35
 
 
-def read_dataset():
+def read_dataset(read_f):
     X = []
-    with open(paths.TEXTS_RAW_JSON, 'r') as f:
+    with open(read_f, 'r') as f:
         for line in f:
             skip = False
             try:
@@ -59,7 +66,7 @@ def read_dataset():
                 skip = True
             else:
                 try:
-                    text = doc['title'] + ' ' + doc['text']
+                    text = doc['text']
                 except KeyError:
                     skip = True
             finally:
@@ -72,8 +79,27 @@ def read_dataset():
     return np.asarray(X)
 
 
+def compute_accuracy():
+    X = read_dataset(paths.test.TEXTS_LABELED_JSON)
+    y_predicted = np.zeros(len(X))
+    y_predicted[np.where(X[:, 1] > X[:, 0])] = ENG_LABEL
+    y_target = read_labels()
+    texts = [line for line in open(paths.test.TEXTS_LABELED_TXT)]
+    misclassified = np.where(y_predicted != y_target)[0]
+
+    # Show random 10 misclassified samples
+    for wrong in random.sample(list(misclassified), 10):
+        print('Misclassified sample (%s) with %s rom, %s eng stopwords:\n%s' %
+              (wrong, int(X[wrong, 0]), int(X[wrong, 1]), texts[wrong]))
+
+    accuracy = 1 - len(misclassified) / len(y_target)
+    return accuracy
+
+
 if __name__ == '__main__':
-    X = read_dataset()
+    print(stop_rom)
+    print(stop_eng)
+    X = read_dataset(paths.train.TEXTS_JSON)
     hard = X[:, 2] < DIST_THRESHOLD
     X_hard = X[hard][:, [0, 1]]
     empty = (X_hard[:, 1] == 0) * (X_hard[:, 1] == 0)
@@ -90,3 +116,6 @@ if __name__ == '__main__':
     plt.ylabel('eng stopwords #')
     plt.legend()
     plt.show()
+
+    # Performance on test set to compare
+    print('Accuracy', compute_accuracy())
