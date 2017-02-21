@@ -6,7 +6,8 @@
 Input data is list of ~100,000 vaccancies written in different languages.
 Most of them are romanian, english or mix of those.
 Data were split into train (~90,000) and test (10,000) examples.
-Labeled test examples could be found in `data/test/text_labeled_ro.json`.
+
+Labeled test examples could be found [here](https://drive.google.com/open?id=0BwH_IQu68lAbZDR0eG11bm9vUGs).
 
 
 #### Solution 1 - The *lazy* one
@@ -35,6 +36,7 @@ Stopwords for romanian language are [here](http://www.ranks.nl/stopwords/romania
 Features normalization played an important role in finding
 the appropriate clusters.
 
+Predicted train examples could be found [here](https://drive.google.com/open?id=0BwH_IQu68lAbMGREdFVsa1RoV2c).
 
 *Drawbacks*: does not generalize well on short examples.
 
