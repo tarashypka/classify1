@@ -92,12 +92,13 @@ if __name__ == '__main__':
     print('Training...')
     classifier = CLASSIFIERS[method]
     classifier = classifier.fit(X_train)
-    y_train = classifier.predict(X)
+    y_train = classifier.predict(X_train)
     y_cv = classifier.predict(X_cv)
 
     # Save train sample predicted results
-    write_f = paths.train.TRAIN_PATH + '/text_kmeans_ro.json'
-    write_train_labels(write_f, y_train)
+    #y_train = classifier.predict(X)
+    #write_f = paths.train.TRAIN_PATH + '/text_kmeans_ro.json'
+    #write_train_labels(write_f, y_train)
 
     # Performance on CV set to tune model parameters
     #print(metrics.silhouette_score(X_cv, y_cv, metric='euclidean'))

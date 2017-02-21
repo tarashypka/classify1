@@ -10,7 +10,7 @@ from utils import paths
 # Handle special characters, numbers, punctuation
 PATTERN_NUMBERS = [r'(\d)+', ' ']
 PATTERN_PUNCTUATION = [r'\p{P}+', ' ']
-PATTERN_NOTERM = [r'\+|\$|€|||\|', ' ']
+PATTERN_NOTERM = [r'\+|●|\$|€|\£||||\|', ' ']
 SPECIAL = 'ĂăÂâÎîȘșŞşȚțŢţ'
 PATTERN_SPECIAL = [r'\w*(' + '|'.join(SPECIAL) + r')\w*', 'ROM_SPECIAL']
 

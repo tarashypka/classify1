@@ -7,7 +7,7 @@ from utils import paths
 
 def read_label_for(text):
     print(text)
-    label = input('Enter class label (0 rom, 1 eng, 2 skip, 3 save): ')
+    label = input('Enter class label (0 rom, 1 eng, 2 skip, 3 exit): ')
     try:
         label = int(label)
     except Exception:

@@ -35,8 +35,11 @@ def read_test_labels():
 
 def write_train_labels(write_f, labels):
     read_f = paths.train.TEXTS_JSON
+    n_labels = len(labels)
     with open(read_f) as fr, open(write_f, 'w') as fw:
         for i, line in enumerate(fr):
+            if i > n_labels:
+                break
             doc = json.loads(line)
             doc['class_pred'] = int(labels[i])
             text = json.dumps(doc, ensure_ascii=False, sort_keys=True)

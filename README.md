@@ -29,10 +29,15 @@ the appropriate clusters.
 *Drawbacks*: does not generalize well on short examples.
 
 
+#### Solution 3 - Chinese Whispers
+
+To be done.
+
+
 #### Performance
 
-Accuracy for 4000 of test documents with lazy solution: 0.991  
-Accuracy for 4000 of test documents with KMeans solution: 0.994
+Accuracy for 5500 of test documents with lazy solution: 0.990  
+Accuracy for 5500 of test documents with KMeans solution: 0.995
 
 
 #### Environment setup
