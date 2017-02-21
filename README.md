@@ -1,6 +1,14 @@
 ### Classify romanian language with Python
 
 
+#### Input data
+
+Input data is list of ~100,000 vaccancies written in different languages.
+Most of them are romanian, english or mix of those.
+Data were split into train (~90,000) and test (10,000) examples.
+Labeled test examples could be found in `data/test/text_labeled_ro.json`.
+
+
 #### Solution 1 - The *lazy* one
 
 Use stopwords count as features. Since stopwords are usually very frequent 
@@ -15,6 +23,8 @@ into account both nX+nY and distance from the line nX=nY
 ```
 D = |nX-nY| / sqrt(2) / (nX+nY+1)
 ```
+
+Stopwords for romanian language are [here](http://www.ranks.nl/stopwords/romanian).
 
 
 *Drawbacks*: does not generalize well on short examples.
@@ -63,8 +73,3 @@ numpy          1.12.0    py36_0
 scikit-learn   0.18.1    np112py36_1
 matplotlib     2.0.0     np112py36_0
 ```
-
-
-#### Notes
-
-Stopwords for romanian language are [here](http://www.ranks.nl/stopwords/romanian).
