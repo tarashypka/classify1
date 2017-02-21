@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from utils import paths
@@ -26,17 +27,17 @@ if __name__ == '__main__':
     write_f = paths.test.TEXTS_LABELED_JSON
     with open(read_f) as fr, open(write_f, 'a') as fw:
         for i, line in enumerate(fr, start=1):
+            os.system('clear')
             print('document', i)
             try:
                 doc = json.loads(line)
                 label = read_label_for(text=doc['text'])
                 if label == 0 or label == 1:
-                    doc['class'] = label
+                    doc['class_true'] = label
                     text = json.dumps(doc, ensure_ascii=False, sort_keys=True)
                     fw.write(text + '\n')
                 elif label == 3:
                     close_and_exit()
-                # Delete line ?
             except Exception as ex:
                 print(ex)
                 close_and_exit()

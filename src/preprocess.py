@@ -1,5 +1,6 @@
 import sys
 import json
+from json.decoder import JSONDecodeError
 
 import regex as re
 
@@ -37,23 +38,28 @@ def preprocess(text):
     return text
 
 
-def process_and_write(read_f, write_f):
+def preprocess_and_write(read_f, write_f):
+    """
+    Merge title and text fields into single text field.
+    Preprocess text.
+    """
     with open(read_f) as fr, open(write_f, 'w') as fw:
         for line in fr:
-            skip = False
             try:
                 doc = json.loads(line)
             except JSONDecodeError:
                 continue
             else:
                 try:
-                    text = doc['text']
+                    text = doc['title'] + ' ' + doc['text']
+                    text = preprocess(text)
+                    doc['text'] = text
+                    del doc['title']
                 except KeyError:
                     continue
-            text = preprocess(text)
+            text = json.dumps(doc, ensure_ascii=False, sort_keys=True)
             fw.write(text + '\n')
 
 
 if __name__ == '__main__':
-    process_and_write(paths.train.TEXTS_JSON, paths.train.TEXTS_TXT)
-    process_and_write(paths.test.TEXTS_LABELED_JSON, paths.test.TEXTS_LABELED_TXT)
+    preprocess_and_write(paths.TEXTS_RAW_JSON, paths.TEXTS_JSON)

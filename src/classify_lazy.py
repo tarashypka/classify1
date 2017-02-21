@@ -7,7 +7,8 @@ import numpy as np
 from nltk.corpus import stopwords
 
 from utils import paths
-from utils import read_labels
+from utils import read_test_labels
+from utils import write_train_labels
 from text_preprocess import replace_special
 
 
@@ -81,8 +82,9 @@ def compute_accuracy():
     X = read_dataset(paths.test.TEXTS_LABELED_JSON)
     y_predicted = np.zeros(len(X))
     y_predicted[np.where(X[:, 1] > X[:, 0])] = ENG_LABEL
-    y_target = read_labels()
-    texts = [line for line in open(paths.test.TEXTS_LABELED_TXT)]
+    y_target = read_test_labels()
+    texts = [json.loads(line)['text']
+             for line in open(paths.test.TEXTS_LABELED_TXT)]
     misclassified = np.where(y_predicted != y_target)[0]
 
     # Show random 10 misclassified samples

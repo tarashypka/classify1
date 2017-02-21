@@ -1,3 +1,4 @@
+import json
 import random
 from math import floor
 
@@ -9,7 +10,8 @@ from sklearn.metrics import pairwise_distances
 from sklearn.model_selection import train_test_split
 
 from utils import paths
-from utils import read_labels
+from utils import read_test_labels
+from utils import write_train_labels
 
 
 method = 'km'
@@ -56,8 +58,9 @@ def compute_accuracy(classifier, dict_):
     corpus = list(corpora.MmCorpus(paths.test.TERMS_CORP))
     X_test = get_data(corpus, n_features=len(dict_))
     y_predicted = classifier.predict(X_test)
-    y_target = read_labels()
-    texts = [line for line in open(paths.test.TEXTS_LABELED_TXT)]
+    y_target = read_test_labels()
+    texts = [json.loads(line)['text']
+             for line in open(paths.test.TEXTS_LABELED_JSON)]
 
     # Show classified examples with predicted labels
     terms = np.asarray(list(dict_.values()))
@@ -89,8 +92,12 @@ if __name__ == '__main__':
     print('Training...')
     classifier = CLASSIFIERS[method]
     classifier = classifier.fit(X_train)
-    y_train = classifier.predict(X_train)
+    y_train = classifier.predict(X)
     y_cv = classifier.predict(X_cv)
+
+    # Save train sample predicted results
+    write_f = paths.train.TRAIN_PATH + '/text_kmeans_ro.json'
+    write_train_labels(write_f, y_train)
 
     # Performance on CV set to tune model parameters
     #print(metrics.silhouette_score(X_cv, y_cv, metric='euclidean'))
