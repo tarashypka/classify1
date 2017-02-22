@@ -1,10 +1,10 @@
+import time
 import json
 import random
 from math import sqrt
 
 import matplotlib.pyplot as plt
 import numpy as np
-from nltk.corpus import stopwords
 
 from utils import paths
 from utils import read_test_labels
@@ -12,14 +12,16 @@ from utils import write_train_labels
 from preprocess import replace_special
 
 
-stop_rom = set(stopwords.words('romanian'))
-stop_rom = set(replace_special(' '.join(stop_rom)).split())
-stop_eng = set(stopwords.words('english'))
+stop_rom = {stop[:-1] for stop in open(paths.stopwords.ROM)}
+stop_rom = set(replace_special(' '.join(stop_rom), method='latin').split())
+stop_rom |= {'ROM_SPECIAL'}
+stop_eng = {stop[:-1] for stop in open(paths.stopwords.ENG)}
 
 # Common stopwords
 stop_rom_eng = stop_rom.intersection(stop_eng)
-stop_eng_in_rom = set(['in', 'o', 'a'])
-stop_rom_in_eng = set([])
+stop_eng_in_rom = {'in', 'o', 'a', 'at'}
+stop_rom_in_eng = {'data', 'as', 'are', 'am', 'care', 'cat', 'sale', 'in',
+                   'zero'}
 
 # Prepare stopwords
 stop_rom -= stop_rom_eng

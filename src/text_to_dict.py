@@ -2,7 +2,6 @@ import json
 from gensim import corpora
 from six import iteritems
 
-from nltk.corpus import stopwords
 from utils import paths
 
 

@@ -12,14 +12,67 @@ PATTERN_NUMBERS = [r'(\d)+', ' ']
 PATTERN_PUNCTUATION = [r'\p{P}+', ' ']
 PATTERN_NOTERM = [r'\+|●|\$|€|\£||||\|', ' ']
 SPECIAL = 'ĂăÂâÎîȘșŞşȚțŢţ'
+LATIN_EQUIVALENT = {
+    'Ă': 'A',
+    'ă': 'a',
+    'Â': 'A',
+    'â': 'a',
+    'Î': 'I',
+    'î': 'i',
+    'Ș': 'S',
+    'ș': 's',
+    'Ş': 'S',
+    'ş': 's',
+    'Ț': 'T',
+    'ț': 't',
+    'Ţ': 'T',
+    'ţ': 't'
+}
 PATTERN_SPECIAL = [r'\w*(' + '|'.join(SPECIAL) + r')\w*', 'ROM_SPECIAL']
 
 # Both in romanian and english languages
 stopterms = set(['a', 'an', 'in'])
 
 
-def replace_special(text):
-    return re.sub(PATTERN_SPECIAL[0], PATTERN_SPECIAL[1], text)
+def replace_special(text, method='alias'):
+    """
+    Parameters
+    ----------
+    method : str
+        Either 'alias' (default) or 'latin'. If 'latin' then replace all 
+        romanian special character with its latin equivalent. 
+        F.e ă will be replaced with a.
+        This is useful in case discrepancy bettween those is not important.
+        F.e when terms ălea and alea should be treated as equal.
+    """
+    if method == 'alias':
+        return re.sub(PATTERN_SPECIAL[0], PATTERN_SPECIAL[1], text)
+    elif method == 'latin':
+        for special in SPECIAL:
+            text = re.sub(special, LATIN_EQUIVALENT[special], text)
+        return text
+    else:
+        raise ValueError('method arg value is wrong')
+
+
+def preprocess(text, special):
+    """
+    Remove numbers, punctuation, redundant whitespaces, special signs,
+    stopterms. Replaces special romanian characters with ROM_SPECIAL.
+
+    Parameters
+    ----------
+    text:
+    """
+    text = text.lower()
+    text = re.sub(PATTERN_NUMBERS[0], PATTERN_NUMBERS[1], text)
+    text = re.sub(PATTERN_PUNCTUATION[0], PATTERN_PUNCTUATION[1], text)
+    text = re.sub(PATTERN_NOTERM[0], PATTERN_NOTERM[1], text)
+    text = replace_special(text)
+    terms = text.split()
+    terms = [term for term in terms if term not in stopterms]
+    text = ' '.join(terms)
+    return text
 
 
 def preprocess(text):

@@ -69,7 +69,6 @@ $ cp ./data/stopwords/romanian $HOME/nltk_data/corpora/stopwords/
 Anaconda (Python 3.5.2) environment with
 
 ```
-nltk           3.2.2     py36_0
 gensim         0.13.4.1  np112py36_0
 numpy          1.12.0    py36_0
 scikit-learn   0.18.1    np112py36_1
